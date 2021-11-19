@@ -1,25 +1,35 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import Post from './components/Post/Post';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      let posts = await fetch('https://gorest.co.in/public/v1/posts');
+      posts = await posts.json();
+      setPosts(posts.data);
+    };
+    getData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <div className='main-wrapper'>
+        <h2 className='title'>KOO BLOG</h2>
+        {posts.length ? (
+          <div className='posts-container'>
+            {posts.map((postItem) => {
+              return <Post data={postItem} />;
+            })}
+          </div>
+        ) : (
+          <div className='loader'>Loading Posts..</div>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
